@@ -1,0 +1,31 @@
+.containerHome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titleHome {
+  background-color: #216093;
+  color: #fff;
+  font-size: 28px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.titleHome,
+.apresentation,
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.apresentation {
+  flex-direction: column;
+  margin: 24px 0;
+  font-family: monospace;
+  font-size: 16px;
+
+  text-align: justify;
+  max-width: 35%;
+  margin: 0 auto;
+}
