@@ -1,50 +1,43 @@
 import { Button } from "@material-ui/core";
-import { DataGrid, GridColDef, GridRowsProp } from "@material-ui/data-grid";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+
 import * as React from "react";
 import { Link } from "react-router-dom";
+
+import { deletePerson, getPerson } from "../../service/Service";
+import { maskCpf, maskMoeda } from "../../shared/Masks";
 import "./Grid.css";
 
 function Grid() {
-  const rows: GridRowsProp = [
-    {
-      id: 1,
-      nome: "Letícia Aurora Farias",
-      cpf: "936.938.039-60",
-      salario: "998",
-      desconto: "74.85",
-      dependentes: "2",
-    },
-    {
-      id: 2,
-      nome: "Letícia Aurora Farias",
-      cpf: "936.938.039-60",
-      salario: "998",
-      desconto: "74.85",
-      dependentes: "2",
-    },
-    {
-      id: 3,
-      nome: "Letícia Aurora Farias",
-      cpf: "936.938.039-60",
-      salario: "998",
-      desconto: "74.85",
-      dependentes: "2",
-    },
-  ];
+  const [rows, setRows] = React.useState([]);
 
-  const columns: GridColDef[] = [
-    { field: "nome", headerName: "Nome", width: 300 },
-    { field: "cpf", headerName: "CPF", width: 300 },
-    { field: "salario", headerName: "Salário", width: 300 },
-    { field: "desconto", headerName: "Desconto", width: 300 },
-    { field: "dependentes", headerName: "Dependentes", width: 300 },
-  ];
+  async function getPersonServer() {
+    const response: any = await getPerson();
+    const data = response.data.map((d: any) => {
+      d.cpf = maskCpf(d.cpf);
+      d.bruto = maskMoeda(+d.bruto || 0);
+      d.desconto = maskMoeda(+d.desconto || 0);
+      d.irrf = maskMoeda(+d.irrf || 0);
+      return d;
+    });
+    setRows(data);
+  }
+
+  React.useEffect(() => {
+    getPersonServer();
+  }, []);
+
+  const handleDelete = async (id: number) => {
+    await deletePerson(id);
+    getPersonServer();
+  };
 
   return (
     <div className="gridContainer">
       <div className="menu">
         <div className="btnGrid">
-          <Link to="/person">
+          <Link to={{ pathname: `/person/` }}>
             <Button variant="contained" color="primary">
               Novo Colaborador
             </Button>
@@ -65,7 +58,46 @@ function Grid() {
       </div>
 
       <div className="gridLayout">
-        <DataGrid rows={rows} columns={columns} />
+        {rows.length > 0 && (
+          <table style={{ width: "100%" }}>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Salário Bruto</th>
+            <th>Desconto</th>
+            <th>Dependentes</th>
+            <th>Desconto IRRF</th>
+            <th>Actions</th>
+            {rows.map((r: any) => {
+              return (
+                <tr style={{ textAlign: "center" }} key={r.id}>
+                  <td>{r.nome}</td>
+                  <td>{r.cpf}</td>
+                  <td>{r.bruto}</td>
+                  <td>{r.desconto}</td>
+                  <td>{r.dependentes}</td>
+                  <td>{r.irrf || 0}</td>
+                  <td>
+                    <div className="actionsTable">
+                      <div className="edit">
+                        <Link
+                          to={{
+                            pathname: `/person`,
+                            search: `${r.id}`,
+                          }}
+                        >
+                          <EditIcon style={{ color: "#000" }} />
+                        </Link>
+                      </div>
+                      <div className="del" onClick={() => handleDelete(r.id)}>
+                        <DeleteIcon style={{ color: "#000" }} />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </table>
+        )}
       </div>
     </div>
   );

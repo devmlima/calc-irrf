@@ -1,0 +1,49 @@
+{
+  "person": [
+    {
+      "nome": "Letícia Aurora Farias",
+      "cpf": "93693803960",
+      "dependentes": "1",
+      "bruto": "5000",
+      "desconto": "122",
+      "irrf": 426.8359999999999,
+      "id": 1
+    },
+    {
+      "nome": "Edson Thiago D",
+      "cpf": "74851747624",
+      "dependentes": 1,
+      "bruto": "1100",
+      "desconto": "100",
+      "irrf": 0,
+      "id": 2
+    },
+    {
+      "nome": "Fátima Elza Tereza Castro",
+      "cpf": "70111887208",
+      "dependentes": 0,
+      "bruto": 5500,
+      "desconto": 628.95,
+      "irrf": -869.36,
+      "id": 3
+    },
+    {
+      "nome": "Sandra Giovanna Drumond",
+      "cpf": "71589075625",
+      "dependentes": 3,
+      "bruto": 4522,
+      "desconto": 492.03,
+      "irrf": 1750.86575,
+      "id": 4
+    },
+    {
+      "nome": "Valentina Clara Nunes",
+      "cpf": "10115140441",
+      "dependentes": 4,
+      "bruto": 10000,
+      "desconto": 713.1,
+      "irrf": 8622.166,
+      "id": 5
+    }
+  ]
+}

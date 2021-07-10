@@ -16,3 +16,18 @@
 .btnGrid {
   font-size: 28px;
 }
+
+.actionsTable {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  cursor: pointer;
+}
+
+.edit {
+  padding: 2px;
+}
+
+.del {
+  padding: 2px;
+}

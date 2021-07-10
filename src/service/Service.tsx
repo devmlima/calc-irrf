@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "localhost:3000/person";
+const BASE_URL = "http://localhost:3000/person";
 
 export const getPerson = async () => {
   return await axios.get(`${BASE_URL}`);
@@ -15,7 +15,7 @@ export const postPerson = async (body: any) => {
 };
 
 export const putPerson = async (body: any) => {
-  return await axios.put(`${BASE_URL}`, body);
+  return await axios.put(`${BASE_URL}/${body.id}`, body);
 };
 
 export const deletePerson = async (id: number) => {

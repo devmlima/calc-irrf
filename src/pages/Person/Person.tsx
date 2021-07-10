@@ -1,44 +1,105 @@
 import React from "react";
-import { Button, FormControl, Input, InputLabel } from "@material-ui/core";
+import { Button, FormControl, Input } from "@material-ui/core";
 import "./Person.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getPersonById, postPerson, putPerson } from "../../service/Service";
+import { useHistory } from "react-router-dom";
+import { maskCpf } from "../../shared/Masks";
 
 function Person() {
-  const [id, setId] = React.useState(null);
+  const [id, setId] = React.useState<any>(null);
   const [nome, setNome] = React.useState("");
   const [cpf, setCpf] = React.useState("");
-  const [dependentes, setDependentes] = React.useState(null);
-  const [bruto, setBruto] = React.useState("");
-  const [desconto, setDesconto] = React.useState("");
-  const [liquido, setLiquido] = React.useState("");
+  const [dependentes, setDependentes] = React.useState(0);
+  const [bruto, setBruto] = React.useState(0);
+  const [desconto, setDesconto] = React.useState(0);
+  const [irrf, setIrrf] = React.useState(null);
+  const { search } = useLocation();
 
-  // LOADING QUANDO EDITAR
-  //  React.useEffect(() => {
-  // if (id) {
-  //   getPersonById(id);
-  // }
-  //   }, [])
+  const history = useHistory();
+
+  async function getPersonByIdServer(id: number) {
+    const response: any = await getPersonById(id);
+    const data = response.data;
+
+    data.cpf = maskCpf(data.cpf);
+
+    setNome(data.nome);
+    setCpf(data.cpf);
+    setBruto(data.bruto);
+    setDependentes(data.dependentes);
+    setDesconto(data.desconto);
+    setIrrf(data.irrf);
+  }
+
+  React.useEffect(() => {
+    if (search) {
+      setId(+search[1]);
+    }
+  }, [id, search]);
+
+  React.useEffect(() => {
+    if (id) {
+      getPersonByIdServer(id);
+    }
+  }, [id]);
+
+  const mapParcela: { [aliquota: number]: number } = {
+    0: 0,
+    7.5: 142.8,
+    15: 354.8,
+    22.5: 636.13,
+    27.5: 869.36,
+  };
 
   const handleSave = async () => {
-    const obj = {
+    const obj: any = {
       nome,
-      cpf,
+      cpf: cpf.replace(/\D/g, ""),
       dependentes,
       bruto,
       desconto,
-      liquido,
+      irrf,
     };
 
     try {
       if (id) {
-        await postPerson(obj);
+        obj.id = id;
+        await putPerson(convertModel(obj));
       } else {
-        await putPerson(obj);
+        await postPerson(convertModel(obj));
       }
+      history.push("/grid");
     } catch (e) {
       throw new Error("Ocorreu um erro ao salvar o formulário!");
     }
+  };
+
+  const convertModel = (obj: any) => {
+    if (obj.cpf) {
+      obj.cpf = cpf.replace(/\D/g, "");
+    }
+    return obj;
+  };
+
+  const handleCalcular = () => {
+    let aliquota = 0;
+    if (bruto >= 1903.98 && bruto < 2826.66) {
+      aliquota = 7.5;
+    } else if (bruto > 2826.65 && bruto < 3751.06) {
+      aliquota = 15;
+    } else if (bruto > 3751.05 && bruto < 4664.69) {
+      aliquota = 22.5;
+    } else if (bruto > 4664.68) {
+      aliquota = 27.5;
+    }
+
+    const parcela = mapParcela[aliquota];
+    const deducao = 164.56 * dependentes;
+    const salarioBase = (bruto - desconto - deducao) * dependentes;
+    const descontoIRRF: any = salarioBase * (aliquota / 100) - parcela;
+
+    setIrrf(descontoIRRF);
   };
 
   return (
@@ -46,39 +107,45 @@ function Person() {
       <div>
         <h1>Cadastro de Novo Colaborador</h1>
       </div>
+      <div style={{ textAlign: "center" }}>
+        <span>
+          Para calcular corretamente o IRRF, preencha:{" "}
+          <strong>
+            O Salário Bruto, Desconto da previdência e número de dependentes
+          </strong>
+        </span>
+      </div>
       <form>
         <div className="row">
           <div>
             <FormControl>
-              <InputLabel htmlFor="nome">Nome</InputLabel>
               <Input
+                placeholder="Nome"
                 id="nome"
                 type="text"
                 onChange={(value: any) => setNome(value.target.value)}
-                defaultValue={nome}
+                value={nome}
               />
             </FormControl>
           </div>
           <div>
             <FormControl>
-              <InputLabel htmlFor="cpf">CPF</InputLabel>
               <Input
+                placeholder="CPF"
                 id="cpf"
                 onChange={(value: any) => setCpf(value.target.value)}
-                defaultValue={cpf}
+                value={cpf}
               />
             </FormControl>
           </div>
           <div>
             <FormControl>
-              <InputLabel htmlFor="dependentes">
-                Número de dependentes
-              </InputLabel>
               <Input
+                placeholder="Numero de dependentes"
                 id="dependentes"
                 type="number"
                 onChange={(value: any) => setDependentes(value.target.value)}
-                defaultValue={dependentes}
+                value={dependentes}
               />
             </FormControl>
           </div>
@@ -87,41 +154,48 @@ function Person() {
         <div className="row">
           <div>
             <FormControl>
-              <InputLabel htmlFor="bruto">Salário Bruto</InputLabel>
               <Input
+                placeholder="Salário Bruto"
                 id="bruto"
                 onChange={(value: any) => setBruto(value.target.value)}
-                defaultValue={bruto}
+                value={bruto}
               />
             </FormControl>
           </div>
 
           <div>
             <FormControl>
-              <InputLabel htmlFor="desconto">
-                Desconto da previdência
-              </InputLabel>
               <Input
+                placeholder="Valor de desconto previdência"
                 id="desconto"
                 onChange={(value: any) => setDesconto(value.target.value)}
-                defaultValue={desconto}
+                value={desconto}
               />
             </FormControl>
           </div>
 
           <div>
             <FormControl>
-              <InputLabel htmlFor="liquido">Salário Líquido</InputLabel>
               <Input
-                id="liquido"
-                onChange={(value: any) => setLiquido(value.target.value)}
-                defaultValue={liquido}
+                placeholder="Desconto IRRF"
+                id="irrf"
+                disabled={true}
+                value={irrf}
               />
             </FormControl>
           </div>
         </div>
 
         <div className="actions">
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCalcular}
+            >
+              CALCULAR
+            </Button>
+          </div>
           <div>
             <Button variant="contained" color="primary" onClick={handleSave}>
               SALVAR
