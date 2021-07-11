@@ -10,7 +10,7 @@
     - Para utilzar este projeto, é necessário após o clone, os seguintes passos:
         - Rodar o comando yarn install, para instalar as libs utilizadas no projeto.
         - Ter o json-server instalado na máquina com o comando -> npm install -g json-server
-        - Para iniciar o backend simulado é necessário executar o comando no terminal -> json-server bacl/db.json
+        - Para iniciar o backend simulado é necessário executar o comando no terminal -> json-server back/db.json
         - Para iniciar o front é necessário executar o comando no terminal -> yarn start
 
 
