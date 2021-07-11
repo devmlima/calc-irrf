@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, FormControl, Input } from "@material-ui/core";
+import { Button, FormControl } from "@material-ui/core";
 import "./Person.css";
 import { Link, useLocation } from "react-router-dom";
 import { getPersonById, postPerson, putPerson } from "../../service/Service";
@@ -13,7 +13,7 @@ function Person() {
   const [dependentes, setDependentes] = React.useState(0);
   const [bruto, setBruto] = React.useState(0);
   const [desconto, setDesconto] = React.useState(0);
-  const [irrf, setIrrf] = React.useState(null);
+  const [irrf, setIrrf] = React.useState(0);
   const { search } = useLocation();
 
   const history = useHistory();
@@ -119,33 +119,37 @@ function Person() {
         <div className="row">
           <div>
             <FormControl>
-              <Input
+              <label htmlFor="nome">Nome</label>
+              <input
                 placeholder="Nome"
                 id="nome"
                 type="text"
-                onChange={(value: any) => setNome(value.target.value)}
                 value={nome}
+                onChange={(value: any) => setNome(value.target.value)}
               />
             </FormControl>
           </div>
           <div>
             <FormControl>
-              <Input
+              <label htmlFor="cpf">CPF</label>
+              <input
                 placeholder="CPF"
                 id="cpf"
-                onChange={(value: any) => setCpf(value.target.value)}
+                type="text"
                 value={cpf}
+                onChange={(value: any) => setCpf(value.target.value)}
               />
             </FormControl>
           </div>
           <div>
             <FormControl>
-              <Input
+              <label htmlFor="dependentes">Número de dependentes</label>
+              <input
                 placeholder="Numero de dependentes"
                 id="dependentes"
                 type="number"
-                onChange={(value: any) => setDependentes(value.target.value)}
                 value={dependentes}
+                onChange={(value: any) => setDependentes(value.target.value)}
               />
             </FormControl>
           </div>
@@ -154,33 +158,39 @@ function Person() {
         <div className="row">
           <div>
             <FormControl>
-              <Input
+              <label htmlFor="bruto">Salário Bruto</label>
+              <input
                 placeholder="Salário Bruto"
                 id="bruto"
-                onChange={(value: any) => setBruto(value.target.value)}
+                type="text"
                 value={bruto}
+                onChange={(value: any) => setBruto(value.target.value)}
               />
             </FormControl>
           </div>
 
           <div>
             <FormControl>
-              <Input
-                placeholder="Valor de desconto previdência"
+              <label htmlFor="desconto">Desconto previdência</label>
+              <input
+                placeholder="Desconto previdência"
                 id="desconto"
-                onChange={(value: any) => setDesconto(value.target.value)}
+                type="text"
                 value={desconto}
+                onChange={(value: any) => setDesconto(value.target.value)}
               />
             </FormControl>
           </div>
 
-          <div>
+          <div className="irrf">
             <FormControl>
-              <Input
+              <label htmlFor="irrf">Desconto IRRF</label>
+              <input
                 placeholder="Desconto IRRF"
                 id="irrf"
-                disabled={true}
+                type="text"
                 value={irrf}
+                disabled={true}
               />
             </FormControl>
           </div>

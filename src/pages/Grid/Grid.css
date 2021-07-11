@@ -31,3 +31,14 @@
 .del {
   padding: 2px;
 }
+
+th {
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 22px;
+}
+
+td {
+  padding: 10px;
+  font-size: 18px;
+}

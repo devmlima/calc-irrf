@@ -44,6 +44,15 @@
       "desconto": 713.1,
       "irrf": 8622.166,
       "id": 5
+    },
+    {
+      "nome": "Matheus",
+      "cpf": "52068924650",
+      "dependentes": "2",
+      "bruto": "5000",
+      "desconto": "250",
+      "irrf": 1562.1240000000003,
+      "id": 6
     }
   ]
 }
